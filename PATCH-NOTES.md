@@ -166,7 +166,7 @@ function startSeamStamper() {
 ### 症状
 
 - 侧栏有青绿流体，**主对话区是一整块纯深色**，鲸鱼完全看不见
-- 网页端（`dsh web`）一切正常
+- 浏览器版宿主一切正常
 - 所有客观指标正常：层已挂载、canvas 有尺寸、`opacity:1`、动画循环在跑、WebGL2 可用、`prefers-reduced-motion: false`、canvas 内容非空（PNG 130 万字符）
 
 ### 根因：一条只在桌面壳生效的 CSS 规则
@@ -182,11 +182,11 @@ DSH 布局包 `dsh-client-ui-layout` 的 `AppFrame.module.css` 里：
 }
 ```
 
-`data-platform="darwin"` 这个属性 **只有 Electron 桌面壳会设置**（由 `dsh-web-frontend` 的引导流程写入 `<html>`）；`dsh web` 不设。因此：
+`data-platform="darwin"` 这个属性 **只有 Electron 桌面壳会设置**（由 `dsh-web-frontend` 的引导流程写入 `<html>`）；浏览器版宿主不设。因此：
 
 | | `<html data-platform>` | `.centerCol` 背景 |
 |---|---|---|
-| 网页端 `dsh web` | 无此属性 | `rgba(0,0,0,0)` 透明 → 流体可见 ✅ |
+| 浏览器版宿主 | 无此属性 | `rgba(0,0,0,0)` 透明 → 流体可见 ✅ |
 | **桌面端 macOS** | `darwin` | `rgb(12,18,27)` 不透明 → **流体被盖住** ❌ |
 
 Aqua 的背景层是负层级方案（`[data-dsh-aqua-ambient]{z-index:-1}`），必须靠"把上层容器刷透明"才能露出来。而插件原有的那条规则在 0.1.7 上**大部分是死规则**：
@@ -221,7 +221,7 @@ Aqua 的背景层是负层级方案（`[data-dsh-aqua-ambient]{z-index:-1}`）�
 
 在临时 profile 上，**运行时把 `<html data-platform>` 设为 `darwin`** 即可复现桌面端条件（CSS 立即重算）：
 
-| | 无属性（网页端） | `darwin`（桌面端） |
+| | 无属性（浏览器版宿主） | `darwin`（桌面端） |
 |---|---|---|
 | 修复前 `.centerCol` | `rgba(0,0,0,0)` | **`rgb(12,18,27)`** |
 | 修复后 `.centerCol` | `rgba(0,0,0,0)` | **`rgba(0,0,0,0)`** ✅ |
@@ -286,7 +286,7 @@ DSH 0.1.7 把 UI primitives 的图标命名从 `Icon*16` 改为 `Icon*Outline{Ar
 > 路径模板是第三条 `/Users/name/my-plugin`（`installPathTemplateHint`）。
 > 判定在宿主 `plugin-manager/lib/index.js` 的 `parseInstallSpec()`：
 > `if (path !== spec || isAbsolute(path))` → `kind: "path"`；
-> **相对路径会被拒**（`a local path must be absolute`），因为浏览器里输入的 cwd 没有意义。
+> **相对路径会被拒**（`a local path must be absolute`），因为安装面板里输入的 cwd 没有意义。
 > 而且 `parseInstallSpec` 的注释说明了原因，`anchorPathSpec` 也只锚定 `.`/`..` 开头的相对路径。
 
 > **安装即启用**：`installBundle(spec, options)` 的 `options.activate` **默认 true**，

@@ -13,7 +13,7 @@ the historical recipe, not pending work.
 | Requirement | Where it is satisfied | Status |
 |---|---|---|
 | GitHub topic **`dsh-plugin`** | `gh repo edit --add-topic dsh-plugin …` below; also mirrored into `package.json` → `keywords` | **done** — `dsh-plugin` plus six discovery topics, verified via `gh repo view --json repositoryTopics` |
-| README carries an install command of the form `dsh plugin --profile web add <package>` | `README.md` → `## Installation` → *From this repository*; `README.zh.md` → `## 安装` → *从本仓库安装* | **done** — verified from the published README through the API |
+| README carries a desktop install command | `README.md` → `## Install (desktop app)`; `README.zh.md` → `## 安装（桌面端）` | **done** |
 | Plugin exports an **`apply(ctx)`** module per the DSH plugin spec | host half `lib/index.js`: `export { apply }` / `function apply(ctx)`; browser half `lib/client.js`: `exports.apply` + `exports.inject = ['theme','slots','locale']` inside `window.__ModuleLoader__.load({ id: "dsh-client-ui-aqua", … })` | **done** — byte-verified in the pushed tree and runtime-verified |
 
 Evidence for the third row: a throwaway DSH instance reported
@@ -101,7 +101,7 @@ git -C <repo> push
 # the published README must show the real install command
 gh api "repos/$owner/$repo/readme" --jq .content |
   ForEach-Object { [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($_)) } |
-  Select-String 'dsh plugin --profile web add'
+  Select-String 'dsh plugin --profile desktop add'
 
 # the topic must be present
 gh repo view "$owner/$repo" --json repositoryTopics --jq '.repositoryTopics[].name'
@@ -113,12 +113,11 @@ git -C <repo> cat-file blob "origin/main:lib/client.js" | sha256sum   # or: git 
 #   index.js   983FE201220FFD74F103961E882B549AEAD22390567BF0D8BDF6582E3D07A56D
 ```
 
-Then install from the published repository on a machine with DSH 0.1.2-rc.1:
+Then install from the published repository on a machine running the DSH desktop app:
 
 ```sh
-dsh plugin --profile web add github:<owner>/<repo>
-dsh --profile web --dump-config
-dsh web
+dsh plugin --profile desktop add github:hkd-Duo/sh-client-ui-aqua-desktop
+dsh --profile desktop --dump-config
 ```
 
 ## 5. Optional: publish to npm
