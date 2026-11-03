@@ -78,3 +78,6 @@ jobs:
             fi
           done
           echo "supported version documented"
+
+      - name: mermaid diagrams are parser-safe
+        run: node .github/scripts/check-mermaid.mjs

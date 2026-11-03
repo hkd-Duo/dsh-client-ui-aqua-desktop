@@ -26,15 +26,15 @@
 
 ```mermaid
 flowchart TD
-    A[打开 DSH 桌面应用] --> B[设置 → 插件 → 插件管理器]
-    B --> C[点「添加插件」]
-    C --> D["填入：github:hkd-Duo/dsh-client-ui-aqua-desktop"]
+    A[打开 DSH 桌面应用] --> B[设置 - 插件 - 插件管理器]
+    B --> C[点添加插件]
+    C --> D[填入 GitHub 安装标识]
     D --> E[等待安装完成]
-    E --> F[完全退出应用<br/>macOS: ⌘Q ／ Windows: 托盘退出]
+    E --> F[完全退出应用]
     F --> G[重新打开应用]
-    G --> H{界面变成玻璃效果?}
-    H -->|是| I[✅ 安装成功]
-    H -->|否| J[检查版本是否为<br/>1.3.1-patch.9-dshfix]
+    G --> H{界面变成玻璃效果}
+    H -- 是 --> I[安装成功]
+    H -- 否 --> J[检查版本 1.3.1-patch.9-dshfix]
     J --> F
 ```
 
@@ -85,22 +85,12 @@ dsh plugin --profile desktop add link:/绝对路径/dsh-client-ui-aqua-desktop
 
 ```mermaid
 flowchart LR
-    subgraph P["~/.dsh/profiles/desktop/  （Windows: %USERPROFILE%\\.dsh\\profiles\\desktop\\）"]
-        direction TB
-        P1["package.json<br/>← bundle 注册在这里"]
-        subgraph N["node_modules/"]
-            subgraph A["dsh-client-ui-aqua/"]
-                A1["lib/client.js<br/>← 插件入口（真正运行的代码）"]
-                A2["package.json<br/>← 版本号 1.3.1-patch.9-dshfix"]
-            end
-        end
-    end
-    subgraph D["应用数据目录"]
-        direction TB
-        D1["Local Storage/leveldb/<br/>← 主题设置 dsh.ui-aqua.*"]
-    end
-    P1 -.读取.-> N
-    A1 -.设置写入.-> D1
+    P[desktop profile 根目录] --> P1[package.json 里的 bundle 注册]
+    P --> N[node_modules]
+    N --> A[dsh-client-ui-aqua]
+    A --> A1[lib/client.js 插件入口]
+    A --> A2[package.json 版本 1.3.1-patch.9-dshfix]
+    A1 --> D1[主题设置存于 localStorage]
 ```
 
 ### macOS

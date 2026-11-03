@@ -26,15 +26,15 @@ English | [中文](README.zh.md)
 
 ```mermaid
 flowchart TD
-    A[Open the DSH desktop app] --> B[Settings → Plugins → Plugin Manager]
-    B --> C[Click "Add plugin"]
-    C --> D["Enter: github:hkd-Duo/dsh-client-ui-aqua-desktop"]
-    D --> E[Wait for install]
-    E --> F[Fully quit the app<br/>macOS: ⌘Q / Windows: Quit from tray]
+    A[Open DSH desktop app] --> B[Settings - Plugins - Plugin Manager]
+    B --> C[Click Add plugin]
+    C --> D[Paste the GitHub install string]
+    D --> E[Wait for install to finish]
+    E --> F[Fully quit the app]
     F --> G[Reopen the app]
-    G --> H{Interface turns glassy?}
-    H -->|Yes| I[✅ Installed]
-    H -->|No| J[Check the version reads<br/>1.3.1-patch.9-dshfix]
+    G --> H{Glass effect visible}
+    H -- Yes --> I[Installed]
+    H -- No --> J[Check version 1.3.1-patch.9-dshfix]
     J --> F
 ```
 
@@ -85,22 +85,12 @@ The path must be **absolute**; relative paths are rejected. On Windows you do no
 
 ```mermaid
 flowchart LR
-    subgraph P["~/.dsh/profiles/desktop/  (Windows: %USERPROFILE%\\.dsh\\profiles\\desktop\\)"]
-        direction TB
-        P1["package.json<br/>← bundle registration lives here"]
-        subgraph N["node_modules/"]
-            subgraph A["dsh-client-ui-aqua/"]
-                A1["lib/client.js<br/>← plugin entry (the code that actually runs)"]
-                A2["package.json<br/>← version 1.3.1-patch.9-dshfix"]
-            end
-        end
-    end
-    subgraph D["App data directory"]
-        direction TB
-        D1["Local Storage/leveldb/<br/>← theme settings dsh.ui-aqua.*"]
-    end
-    P1 -.read by host.-> N
-    A1 -.writes settings.-> D1
+    P[Desktop profile root] --> P1[package.json - bundle registration]
+    P --> N[node_modules]
+    N --> A[dsh-client-ui-aqua]
+    A --> A1[lib/client.js - plugin entry]
+    A --> A2[package.json - version 1.3.1-patch.9-dshfix]
+    A1 --> D1[Theme settings in localStorage]
 ```
 
 ### macOS
