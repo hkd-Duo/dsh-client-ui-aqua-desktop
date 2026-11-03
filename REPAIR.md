@@ -122,7 +122,7 @@ which is not the build shipped here.
 Reproduce:
 
 ```sh
-dsh plugin --profile desktop add link:<absolute-path-to-this-repo>   # or github:hkd-Duo/sh-client-ui-aqua-desktop
+dsh plugin --profile desktop add link:<absolute-path-to-this-repo>   # or github:hkd-Duo/dsh-client-ui-aqua-desktop
 # restart the desktop app, then verify in Plugin Manager that the version reads 1.3.1-patch.9-dshfix
 node tools/cdp-aqua-test.mjs "<desktop-inspector-url>" 15000
 node tools/cdp-eval.mjs     "<desktop-inspector-url>" 12000 @tools/expr-toggle.js

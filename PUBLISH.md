@@ -116,7 +116,7 @@ git -C <repo> cat-file blob "origin/main:lib/client.js" | sha256sum   # or: git 
 Then install from the published repository on a machine running the DSH desktop app:
 
 ```sh
-dsh plugin --profile desktop add github:hkd-Duo/sh-client-ui-aqua-desktop
+dsh plugin --profile desktop add github:hkd-Duo/dsh-client-ui-aqua-desktop
 dsh --profile desktop --dump-config
 ```
 

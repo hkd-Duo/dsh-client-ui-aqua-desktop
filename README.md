@@ -1,30 +1,64 @@
 # dsh-client-ui-aqua — DSH desktop glass theme
 
-Install it on the DSH desktop app and the interface turns into frosted glass: header, sidebar, composer, stats line and trajectory view become floating glass panes over a living fluid board or your own wallpaper. Turn the master switch off and the stock UI returns exactly.
+![version](https://img.shields.io/badge/version-1.3.1--patch.9--dshfix-blue)
+![DSH](https://img.shields.io/badge/DSH-0.2.1--rc.5-green)
+![platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows-lightgrey)
+![license](https://img.shields.io/badge/license-AGPL--3.0--only-orange)
 
-Current version: **`1.3.1-patch.9-dshfix`** (built for DSH **0.2.1-rc.5**)
+Install it on the DSH desktop app and the interface turns into frosted glass: header, sidebar, composer, stats line and trajectory view become floating glass panes over a living fluid board or your own wallpaper. Turn the master switch off and the stock UI returns exactly.
 
 English | [中文](README.zh.md)
 
 ---
 
+## ⚡ At a glance
+
+| Item | Value |
+|---|---|
+| **Supported desktop version** | **DSH 0.2.1-rc.5** (verified ✅) |
+| **Plugin version** | `1.3.1-patch.9-dshfix` |
+| **Platforms** | macOS ✅ / Windows ✅ (same install method) |
+| **How to install** | Plugin Manager → `github:hkd-Duo/dsh-client-ui-aqua-desktop` |
+| **One required step** | **Fully quit and reopen the app** after installing |
+| **Default state** | Theme is **on** after install |
+
+### Install flow
+
+```mermaid
+flowchart TD
+    A[Open the DSH desktop app] --> B[Settings → Plugins → Plugin Manager]
+    B --> C[Click "Add plugin"]
+    C --> D["Enter: github:hkd-Duo/dsh-client-ui-aqua-desktop"]
+    D --> E[Wait for install]
+    E --> F[Fully quit the app<br/>macOS: ⌘Q / Windows: Quit from tray]
+    F --> G[Reopen the app]
+    G --> H{Interface turns glassy?}
+    H -->|Yes| I[✅ Installed]
+    H -->|No| J[Check the version reads<br/>1.3.1-patch.9-dshfix]
+    J --> F
+```
+
+### Version compatibility
+
+| DSH desktop version | Status | Notes |
+|---|---|---|
+| **0.2.1-rc.5** | ✅ **Verified** | Current baseline of this repo |
+| 0.2.1-rc.3 | ⚠️ Untested | Baseline of the upstream repair fork |
+| 0.2.0 / 0.1.7 line | ⚠️ Untested | Allowed by peer ranges, never run |
+| 0.1.2-rc.1 and earlier | ❌ Not supported | Old kernel, API changed |
+
+---
+
 ## 1. Install
 
-### Method A — Plugin Manager (recommended, works on macOS and Windows)
+### Method A — Plugin Manager (recommended, macOS and Windows)
 
 1. Open the **DSH desktop app**
 2. Go to **Settings → Plugins → Plugin Manager**
 3. Click **Add plugin**
-4. Enter:
-
-   ```
-   github:hkd-Duo/sh-client-ui-aqua-desktop
-   ```
-
+4. Enter: `github:hkd-Duo/dsh-client-ui-aqua-desktop`
 5. Wait for the install to finish
-6. **Fully quit the app** and reopen it
-   - macOS: `⌘Q` (not just closing the window)
-   - Windows: tray icon → Quit, or end the process in Task Manager
+6. **Fully quit the app** and reopen it (macOS `⌘Q`; Windows tray → Quit)
 7. The interface should turn glassy immediately
 
 > Step 6 is required: the plugin appends itself to the profile's bundle list, and the host reads that list only at startup.
@@ -34,18 +68,40 @@ English | [中文](README.zh.md)
 Lets you edit files and see the result after a window reload (macOS `⌘R`) without reinstalling.
 
 ```sh
-git clone https://github.com/hkd-Duo/sh-client-ui-aqua-desktop.git
-dsh plugin --profile desktop add link:/absolute/path/to/sh-client-ui-aqua-desktop
+git clone https://github.com/hkd-Duo/dsh-client-ui-aqua-desktop.git
+dsh plugin --profile desktop add link:/absolute/path/to/dsh-client-ui-aqua-desktop
 ```
 
-- macOS example: `link:/Users/yourname/sh-client-ui-aqua-desktop`
-- Windows example: `link:C:\Users\yourname\sh-client-ui-aqua-desktop`
+- macOS example: `link:/Users/yourname/dsh-client-ui-aqua-desktop`
+- Windows example: `link:C:\Users\yourname\dsh-client-ui-aqua-desktop`
 
 The path must be **absolute**; relative paths are rejected. On Windows you do not need the `dsh` command — Method A is enough.
 
 ---
 
 ## 2. File locations
+
+### Directory diagram
+
+```mermaid
+flowchart LR
+    subgraph P["~/.dsh/profiles/desktop/  (Windows: %USERPROFILE%\\.dsh\\profiles\\desktop\\)"]
+        direction TB
+        P1["package.json<br/>← bundle registration lives here"]
+        subgraph N["node_modules/"]
+            subgraph A["dsh-client-ui-aqua/"]
+                A1["lib/client.js<br/>← plugin entry (the code that actually runs)"]
+                A2["package.json<br/>← version 1.3.1-patch.9-dshfix"]
+            end
+        end
+    end
+    subgraph D["App data directory"]
+        direction TB
+        D1["Local Storage/leveldb/<br/>← theme settings dsh.ui-aqua.*"]
+    end
+    P1 -.read by host.-> N
+    A1 -.writes settings.-> D1
+```
 
 ### macOS
 
@@ -57,7 +113,7 @@ The path must be **absolute**; relative paths are rejected. On Windows you do no
 | Plugin entry file | `~/.dsh/profiles/desktop/node_modules/dsh-client-ui-aqua/lib/client.js` |
 | **Bundle registration** | `~/.dsh/profiles/desktop/package.json` → `dsh.profile.bundles` must contain `dsh-client-ui-aqua` |
 | App data directory | `~/Library/Application Support/@deepseek-ai/dsh-desktop/` |
-| **Theme settings** | `dsh.ui-aqua.*` keys inside `Local Storage/leveldb/` under that directory |
+| **Theme settings** | `dsh.ui-aqua.*` keys in `Local Storage/leveldb/` under that directory |
 | Bundled CLI | `/Applications/DeepSeek Harness.app/Contents/Resources/runtime/cli/bin/dsh` |
 
 ### Windows
@@ -70,7 +126,7 @@ The path must be **absolute**; relative paths are rejected. On Windows you do no
 | Plugin entry file | `%USERPROFILE%\.dsh\profiles\desktop\node_modules\dsh-client-ui-aqua\lib\client.js` |
 | **Bundle registration** | `%USERPROFILE%\.dsh\profiles\desktop\package.json` → `dsh.profile.bundles` |
 | App data directory | `%APPDATA%\@deepseek-ai\dsh-desktop\` |
-| **Theme settings** | `dsh.ui-aqua.*` keys inside `Local Storage\leveldb\` under that directory |
+| **Theme settings** | `dsh.ui-aqua.*` keys in `Local Storage\leveldb\` under that directory |
 
 ### Post-install check (both must hold)
 
@@ -83,7 +139,7 @@ The path must be **absolute**; relative paths are rejected. On Windows you do no
 
 ### Master switch
 
-**Settings → Plugins → the Aqua card**. The theme is **on by default**; turning the switch off removes every effect and restores the stock UI.
+**Settings → Plugins → the Aqua card**. The theme is **on by default**; turning it off removes every effect and restores the stock UI.
 
 ### Controls
 
@@ -94,18 +150,20 @@ The path must be **absolute**; relative paths are rejected. On Windows you do no
 | Mode | **Mica** = floating glass card layout; **Compatibility** = stock layout, material swapped only |
 | Blur / Frost | Glass blur and frost strength (Mica mode) |
 | Hue / Depth | Fluid backdrop colour and depth |
-| Background brightness | Dark mode darkens (0–50), light mode brightens (50–100); 50 is unchanged |
-| Backdrop source | Fluid board / custom wallpaper (wallpaper has its own blur, brightness, delete) |
-| Particle whale | The particle whale in the middle of the chat area |
+| Background brightness | Dark mode darkens (0–50), light mode brightens (50–100); 50 unchanged |
+| Backdrop source | Fluid board / custom wallpaper (wallpaper has blur, brightness, delete) |
+| Particle whale | Particle whale in the middle of the chat area |
 
 The whole control block is hidden while the master switch is off.
 
 ### Switching modes
 
-Change it in **Appearance → Mode**; it applies immediately.
+| Mode | Effect | Good for |
+|---|---|---|
+| **Mica** | Sidebar/header/composer become floating glass cards | Best look |
+| **Compatibility** | Layout untouched, only the material becomes glass | Avoiding layout changes, coexisting with other plugins |
 
-- **Mica** — sidebar/header/composer become floating glass cards (best looking)
-- **Compatibility** — layout untouched, only the material becomes glass (safest)
+Change it in **Appearance → Mode**; it applies immediately.
 
 ### Updating
 
@@ -117,28 +175,30 @@ Use the plugin manager's update action, then **restart the app**. For `link:` in
 dsh plugin --profile desktop remove dsh-client-ui-aqua
 ```
 
-Or uninstall from the plugin manager, then **restart the app**.
+Or uninstall from the plugin manager, then **restart the app**. Every effect is a disposable handle and is released on removal.
 
 ---
 
 ## 4. Windows support
 
-**Yes — installation is identical to macOS, nothing needs changing.**
+**Yes — the install is identical to macOS, nothing needs changing.**
 
 Why:
 
 1. The plugin is a pure client-side artifact (`dsh.client.platform = "web"`); the desktop app loads the **same frontend code** on every platform.
-2. The fixes here contain no macOS-specific logic — the transparency rules match **class-name substrings** such as `[class*='centerCol']` and `[class*='rightbarCol']`, which are the same class names on Windows.
+2. The fixes here contain no macOS-specific logic — the transparency rules match **class-name substrings** such as `[class*='centerCol']` and `[class*='rightbarCol']`, the same class names on Windows.
 3. The desktop-only main-column fixes already target Windows custom-titlebar mode.
-4. The install identifier `github:hkd-Duo/sh-client-ui-aqua-desktop` is identical on both platforms.
+4. The install identifier `github:hkd-Duo/dsh-client-ui-aqua-desktop` is identical on both platforms.
 
 Platform differences are limited to paths (see the tables above) and the absolute `C:\...` path when installing with `link:`.
 
 **Three checks on Windows:**
 
-1. Plugin page version reads `1.3.1-patch.9-dshfix`
-2. The interface shows a clear frosted-glass effect
-3. **Settings → General → Appearance** shows the Aqua controls
+| Check | Expected |
+|---|---|
+| Plugin page version | `1.3.1-patch.9-dshfix` |
+| Visual effect | Clear frosted glass (sidebar, composer) |
+| Controls | Aqua controls under Settings → General → Appearance |
 
 All three up = working.
 
@@ -190,3 +250,7 @@ The plugin manager only manages composite bundles; a package without a `dsh.bund
 ![](assets/3.png)
 
 ![](assets/4.png)
+
+## License
+
+This repository keeps the upstream `LICENSE` (**AGPL-3.0-only**). If AGPL is incompatible with your use case, do not install it.
