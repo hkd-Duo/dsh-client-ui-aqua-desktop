@@ -1,0 +1,46 @@
+name: Sync release notes
+
+# Keeps the most recent release's body in step with .github/release-body.md.
+# The release itself is created by the Release workflow on a tag push; this
+# job only refreshes the notes, so editing the template also updates the
+# already-published release without a new tag.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Find latest release tag
+        id: latest
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG=$(gh api "repos/${{ github.repository }}/releases/latest" -q .tag_name 2>/dev/null || true)
+          if [ -z "$TAG" ] || [ "$TAG" = "null" ]; then
+            echo "no published release yet - nothing to sync"
+            echo "tag=" >> "$GITHUB_OUTPUT"
+          else
+            echo "latest release: $TAG"
+            echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Render body for that tag
+        if: steps.latest.outputs.tag != ''
+        run: python3 .github/scripts/render-release-body.py --tag "${{ steps.latest.outputs.tag }}"
+
+      - name: Update release notes
+        if: steps.latest.outputs.tag != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release edit "${{ steps.latest.outputs.tag }}" --notes-file /tmp/release-body.md
+          echo "release notes synced for ${{ steps.latest.outputs.tag }}"

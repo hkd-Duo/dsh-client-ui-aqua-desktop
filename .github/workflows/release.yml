@@ -13,57 +13,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Read plugin version
-        id: meta
-        run: |
-          VERSION=$(node -p "require('./package.json').version")
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "plugin version: $VERSION"
+      - name: Render release body from template
+        run: python3 .github/scripts/render-release-body.py
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           name: ${{ github.ref_name }}
-          body: |
-            ## dsh-client-ui-aqua ${{ github.ref_name }}
-
-            Glassmorphism theme for the **DSH desktop app**.
-
-            | | |
-            |---|---|
-            | Plugin version | `${{ steps.meta.outputs.version }}` |
-            | Supported DSH desktop version | **0.2.1-rc.5** (verified) |
-            | Platforms | macOS (verified) / Windows (same install path) |
-            | Install | Plugin Manager -> Add plugin -> `github:${{ github.repository }}` |
-            | Required step | fully quit and reopen the app after installing |
-
-            ### Attached assets
-
-            | Asset | Purpose |
-            |---|---|
-            | `client.js` | the shipped client bundle, for auditing or manual comparison |
-            | `install.ps1` | upstream helper script, kept for provenance only |
-
-            ### Auto-generated source archives
-
-            In addition to the assets above, GitHub attaches **auto-generated**
-            `Source code (zip)` and `Source code (tar.gz)` archives to every release.
-            They are produced by GitHub from the tag, not uploaded by this workflow,
-            and contain the full repository at that exactly pinned revision — useful
-            for auditing or for building offline.
-
-            To install from a source archive:
-
-            1. Download `Source code (tar.gz)` and extract it
-            2. Install the extracted directory as a local plugin:
-
-               ```sh
-               dsh plugin --profile desktop add link:/absolute/path/to/extracted-directory
-               ```
-
-            3. Restart the desktop app
-
-            **Full changelog:** https://github.com/${{ github.repository }}/commits/${{ github.ref_name }}
+          body_path: /tmp/release-body.md
           files: |
             lib/client.js
             install.ps1
