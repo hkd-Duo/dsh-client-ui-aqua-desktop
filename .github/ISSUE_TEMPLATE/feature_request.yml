@@ -1,0 +1,56 @@
+name: 功能建议
+description: 希望主题增加或改进的能力
+title: "[feat] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        这是一个个人维护的主题项目，范围有意收窄：
+        欢迎兼容性修复、视觉/布局 bug、文档改进；大型新功能与设计语言改动一般不做。
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: 你想解决什么问题
+      description: 描述使用场景，而不是直接给方案
+      placeholder: 例如：小屏笔记本上侧栏太宽，希望有更紧凑的布局
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 你设想的做法
+      description: 可选，有想法就写
+    validations:
+      required: false
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: 属于哪一类
+      options:
+        - 视觉 / 布局
+        - 设置项（外观调节）
+        - 兼容性（新版 DSH 适配）
+        - 文档
+        - 其他
+    validations:
+      required: true
+
+  - type: input
+    id: dsh-version
+    attributes:
+      label: 你的 DSH 桌面版本
+      placeholder: "0.2.1-rc.5"
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: 参与意愿
+      options:
+        - label: 我愿意自己提 PR 实现
+          required: false

@@ -231,6 +231,42 @@ dsh plugin --profile desktop add dsh-client-ui-aqua   # ← 未经修补的旧�
 - 状态只存于 `localStorage` 的 `dsh.ui-aqua.*` 键
 - 安装过程不执行任何构建脚本（`lib/` 随包提供预构建产物）
 
+## 八、Release 产物与源码包
+
+每个 Release 页面（[查看全部版本](https://github.com/hkd-Duo/dsh-client-ui-aqua-desktop/releases)）包含两类东西：
+
+### 1. 工作流上传的产物
+
+| 文件 | 用途 |
+|---|---|
+| `client.js` | 实际运行的前端 bundle，可用于审计或手动比对 |
+| `install.ps1` | 上游辅助脚本，仅作出处保留 |
+
+### 2. GitHub 自动生成的源码包
+
+Release 页底部的 **`Source code (zip)`** 和 **`Source code (tar.gz)`** 是 **GitHub 自动生成**的，不是工作流上传的：
+
+- 内容是**该 tag 对应的完整仓库快照**（含 `src/`、`lib/`、全部文档）
+- 适合审计、归档，或完全离线安装
+- 下载后**无需构建** —— `lib/` 已经是预构建产物
+
+**从源码包离线安装：**
+
+1. 下载 `Source code (tar.gz)` 并解压
+2. 以本地目录方式安装（必须绝对路径）：
+
+   ```sh
+   dsh plugin --profile desktop add link:/解压后的绝对路径
+   ```
+
+3. 完全退出应用后重新打开
+
+## 九、参与贡献
+
+- 提交问题前先读 [贡献指南](CONTRIBUTING.md)
+- 请使用 [Issue 模板](https://github.com/hkd-Duo/dsh-client-ui-aqua-desktop/issues/new/choose) —— 会自动要求填写 DSH 版本、插件版本、自检结果
+- 本地开发方式、提交前自检命令、PR 流程、发布流程都写在 [CONTRIBUTING.md](CONTRIBUTING.md)
+
 ## 截图
 
 ![](assets/1.png)

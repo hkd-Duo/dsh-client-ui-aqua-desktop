@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 📖 安装与使用文档
+    url: https://github.com/hkd-Duo/dsh-client-ui-aqua-desktop#readme
+    about: 先看 README 的安装步骤、文件位置与「装好后的自检」
+  - name: 📦 版本更新记录
+    url: https://github.com/hkd-Duo/dsh-client-ui-aqua-desktop/releases
+    about: 查看各版本的修复内容与支持的 DSH 桌面版本
+  - name: 🧩 贡献指南
+    url: https://github.com/hkd-Duo/dsh-client-ui-aqua-desktop/blob/main/CONTRIBUTING.md
+    about: 本地开发、提交前自检、PR 流程

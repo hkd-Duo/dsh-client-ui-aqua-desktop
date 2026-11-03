@@ -1,0 +1,100 @@
+name: Bug 报告
+description: 主题显示异常、崩溃、安装失败等问题
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        提交前请先完成 README 里的「装好后的自检」，并在下面勾选结果。
+        没有版本号的 issue 很难定位，不同 DSH 版本行为差异很大。
+
+  - type: input
+    id: dsh-version
+    attributes:
+      label: DSH 桌面版本
+      description: 应用「关于」里显示，或安装包版本
+      placeholder: "0.2.1-rc.5"
+    validations:
+      required: true
+
+  - type: input
+    id: plugin-version
+    attributes:
+      label: 插件版本
+      description: 插件页 Aqua 卡片上显示的版本
+      placeholder: "1.3.1-patch.9-dshfix"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: 操作系统
+      options:
+        - macOS
+        - Windows
+        - 其他
+    validations:
+      required: true
+
+  - type: dropdown
+    id: install-method
+    attributes:
+      label: 安装方式
+      options:
+        - 插件管理器（github:hkd-Duo/dsh-client-ui-aqua-desktop）
+        - 本地目录（link:）
+        - 其他
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: selfcheck
+    attributes:
+      label: 安装后自检
+      options:
+        - label: 插件页版本号正确（1.3.1-patch.9-dshfix）
+          required: false
+        - label: package.json 的 dsh.profile.bundles 里有 dsh-client-ui-aqua
+          required: false
+        - label: 已经「完全退出应用」后重新打开过
+          required: false
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: 现象
+      description: 看到了什么，期望是什么
+      placeholder: 例如：兼容模式下右侧半个聊天区发糊
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      placeholder: |
+        1. 打开 ...
+        2. 切到 ... 模式
+        3. 出现 ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: 截图 / 录屏
+      description: 直接拖拽图片到此处
+    validations:
+      required: false
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: 其他信息
+      description: 主题模式（云母 / 兼容）、是否同时装了其它 UI 插件、日志片段等
+    validations:
+      required: false
