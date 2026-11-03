@@ -1,0 +1,80 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    name: validate plugin bundle and docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: package.json is valid JSON
+        run: node -e "JSON.parse(require('fs').readFileSync('package.json','utf8')); console.log('package.json ok')"
+
+      - name: prebuilt bundles parse
+        run: |
+          node --check lib/client.js
+          node --check lib/index.js
+          echo "syntax ok"
+
+      - name: dsh.bundle.patch present (Plugin Manager requirement)
+        run: |
+          node -e "
+            const p = require('./package.json');
+            const patch = p.dsh && p.dsh.bundle && p.dsh.bundle.patch;
+            if (!patch) { console.error('FAIL: missing dsh.bundle.patch — Plugin Manager will reject this package'); process.exit(1); }
+            console.log('bundle patch:', patch);
+          "
+
+      - name: bundle patch file exists
+        run: |
+          node -e "
+            const fs = require('fs');
+            const p = require('./package.json');
+            const f = p.dsh.bundle.patch;
+            if (!fs.existsSync(f)) { console.error('FAIL: bundle patch file not found: ' + f); process.exit(1); }
+            console.log('bundle patch file ok:', f);
+          "
+
+      - name: version matches READMEs
+        run: |
+          node -e "
+            const fs = require('fs');
+            const v = require('./package.json').version;
+            const files = ['README.md', 'README.zh.md'];
+            let bad = 0;
+            for (const f of files) {
+              const s = fs.readFileSync(f, 'utf8');
+              if (!s.includes(v)) { console.error('FAIL: ' + f + ' does not mention version ' + v); bad = 1; }
+            }
+            if (bad) process.exit(1);
+            console.log('version consistent in READMEs:', v);
+          "
+
+      - name: no web-profile install commands in docs
+        run: |
+          if grep -rnE "dsh plugin --profile web|dsh web |--profile web " README.md README.zh.md; then
+            echo "FAIL: docs still reference the web profile; this is a desktop-only package"
+            exit 1
+          fi
+          echo "docs clean"
+
+      - name: supported desktop version documented
+        run: |
+          for f in README.md README.zh.md; do
+            if ! grep -q "0.2.1-rc.5" "$f"; then
+              echo "FAIL: $f must state the supported desktop version (0.2.1-rc.5)"
+              exit 1
+            fi
+          done
+          echo "supported version documented"
