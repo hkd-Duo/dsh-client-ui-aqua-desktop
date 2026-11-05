@@ -24,19 +24,7 @@ English | [中文](README.zh.md)
 
 ### Install flow
 
-```mermaid
-flowchart TD
-    A[Open DSH desktop app] --> B[Settings - Plugins - Plugin Manager]
-    B --> C[Click Add plugin]
-    C --> D[Paste the GitHub install string]
-    D --> E[Wait for install to finish]
-    E --> F[Fully quit the app]
-    F --> G[Reopen the app]
-    G --> H{Glass effect visible}
-    H -- Yes --> I[Installed]
-    H -- No --> J[Check version 1.3.1-patch.9-dshfix]
-    J --> F
-```
+![Install flow](assets/install-flow.en.svg)
 
 ### Version compatibility
 
@@ -83,14 +71,15 @@ The path must be **absolute**; relative paths are rejected. On Windows you do no
 
 ### Directory diagram
 
-```mermaid
-flowchart LR
-    P[Desktop profile root] --> P1[package.json - bundle registration]
-    P --> N[node_modules]
-    N --> A[dsh-client-ui-aqua]
-    A --> A1[lib/client.js - plugin entry]
-    A --> A2[package.json - version 1.3.1-patch.9-dshfix]
-    A1 --> D1[Theme settings in localStorage]
+```text
+~/.dsh/profiles/desktop/                  # desktop profile root
+├── package.json                          # dsh.profile.bundles lists dsh-client-ui-aqua
+└── node_modules/
+    └── dsh-client-ui-aqua/               # the plugin itself
+        ├── lib/client.js                 # plugin entry — the whole theme lives here
+        └── package.json                  # version 1.3.1-patch.9-dshfix
+
+Windows: the same layout under %USERPROFILE%\.dsh\profiles\desktop\
 ```
 
 ### macOS

@@ -80,21 +80,32 @@ CI 跑的就是这些，本地先跑一遍能省一轮：
 node -e "JSON.parse(require('fs').readFileSync('package.json','utf8'))"   # package.json 合法
 node --check lib/client.js && node --check lib/index.js                    # 语法
 node -e "const p=require('./package.json'); if(!p.dsh?.bundle?.patch) process.exit(1)"  # bundle patch
-node .github/scripts/check-mermaid.mjs                                     # 图表可渲染
+node .github/scripts/check-diagrams.mjs                                    # 图表资源存在且 README 正确引用
+python3 tools/make-install-flow-svg.py --check                             # 图表资源与生成器一致
 grep -nE "dsh plugin --profile web|--profile web " README.md README.zh.md   # 不应有输出
 for f in README.md README.zh.md; do grep -q "0.2.1-rc.5" "$f" || echo "缺版本声明: $f"; done
 ```
 
-### 5. 图表（Mermaid）注意事项
+### 5. 图表（静态 SVG）
 
-GitHub 是在浏览器端渲染 Mermaid 的，解析失败会显示 **"Unable to render rich display"**。节点标签里**不要**用：
+README 里的两张图都是**静态 SVG**，不再用 Mermaid：
 
-- 双引号 `"`、中文引号 `“”`
-- HTML，例如 `<br/>`
-- Unicode 箭头 `→` `←`
-- emoji `✅` `⚠️`
+- `assets/install-flow.en.svg` / `assets/install-flow.zh.svg` —— 安装流程图
+- 目录结构用 ```text 代码块画树（路径表格才是权威信息）
 
-CI 里的 `check-mermaid.mjs` 会拦住这类写法。
+不用 Mermaid 的原因：GitHub 的 Mermaid 是塞进 `viewscreen.githubusercontent.com` 的 iframe 里渲染的，
+该域名在代理分流/网络受限时会加载失败，读者只能看到 **"Unable to render rich display"**；
+静态 SVG 在任何网络下都能显示，且在 GitHub 浅色/深色主题下外观一致。
+
+改流程文案或步骤时：改 `tools/make-install-flow-svg.py` 里的 `COPY`，然后
+
+```sh
+python3 tools/make-install-flow-svg.py            # 重新生成两张 SVG
+python3 tools/make-install-flow-svg.py --check    # 本地确认没有漂移（CI 也跑这一步）
+```
+
+两个 README 里的引用（`![](assets/install-flow.*.svg)`）保持不变，CI 会校验资源存在、被引用且与生成器一致。
+**不要**再把图表改回 Mermaid —— `check-diagrams.mjs` 会直接拦下来。
 
 ## 提交 PR
 

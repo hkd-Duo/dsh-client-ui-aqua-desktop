@@ -79,5 +79,8 @@ jobs:
           done
           echo "supported version documented"
 
-      - name: mermaid diagrams are parser-safe
-        run: node .github/scripts/check-mermaid.mjs
+      - name: static diagram assets are present and referenced
+        run: node .github/scripts/check-diagrams.mjs
+
+      - name: diagram assets match their generator
+        run: python3 tools/make-install-flow-svg.py --check

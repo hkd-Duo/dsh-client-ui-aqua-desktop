@@ -24,19 +24,7 @@
 
 ### 安装流程图
 
-```mermaid
-flowchart TD
-    A[打开 DSH 桌面应用] --> B[设置 - 插件 - 插件管理器]
-    B --> C[点添加插件]
-    C --> D[填入 GitHub 安装标识]
-    D --> E[等待安装完成]
-    E --> F[完全退出应用]
-    F --> G[重新打开应用]
-    G --> H{界面变成玻璃效果}
-    H -- 是 --> I[安装成功]
-    H -- 否 --> J[检查版本 1.3.1-patch.9-dshfix]
-    J --> F
-```
+![安装流程](assets/install-flow.zh.svg)
 
 ### 版本适配矩阵
 
@@ -83,14 +71,15 @@ dsh plugin --profile desktop add link:/绝对路径/dsh-client-ui-aqua-desktop
 
 ### 目录结构图示
 
-```mermaid
-flowchart LR
-    P[desktop profile 根目录] --> P1[package.json 里的 bundle 注册]
-    P --> N[node_modules]
-    N --> A[dsh-client-ui-aqua]
-    A --> A1[lib/client.js 插件入口]
-    A --> A2[package.json 版本 1.3.1-patch.9-dshfix]
-    A1 --> D1[主题设置存于 localStorage]
+```text
+~/.dsh/profiles/desktop/                  # desktop profile 根目录
+├── package.json                          # dsh.profile.bundles 里要含 dsh-client-ui-aqua
+└── node_modules/
+    └── dsh-client-ui-aqua/               # 插件本体
+        ├── lib/client.js                 # 插件入口 —— 整个主题的代码都在这里
+        └── package.json                  # 版本 1.3.1-patch.9-dshfix
+
+Windows：同样的结构，根目录为 %USERPROFILE%\.dsh\profiles\desktop\
 ```
 
 ### macOS
