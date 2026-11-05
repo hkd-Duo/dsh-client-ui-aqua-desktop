@@ -19,6 +19,30 @@
 
 ---
 
+## ⚠️ Windows 用户须知：主题看起来"静止"≠ 插件失效
+
+**先看系统开关，不要先怀疑插件。** 如果 Windows 关闭了「动画效果」，
+Chromium/Electron 会把 `SPI_GETCLIENTAREAANIMATION = false` 翻译成网页的 `prefers-reduced-motion: reduce`
+（映射写死在 Chromium 的 [animation_win.cc](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/ui/gfx/animation/animation_win.cc)），
+本插件按无障碍规范在该偏好下**只渲染静态帧**：
+
+- 粒子鲸鱼不游动、鼠标推散/追光无效（"鼠标一移动，鲸鱼粒子效果就失效了"）；
+- 背景流体、网状点阵不流动；
+- 小鱼/气泡是 CSS 动画，不受该偏好影响，仍会动。
+
+**恢复方法**：设置 → 辅助功能 → 视觉效果 → 打开「动画效果」（或运行 `SystemPropertiesPerformance.exe` →
+视觉效果 → 自定义，勾选"在窗口内动画控件和元素"等），然后**重新加载客户端 / 重启桌面应用** ——
+插件在挂载时读取该偏好，热切换不会自动生效。
+
+| 自检项 | 正常值 |
+|---|---|
+| 系统「动画效果」开关 | 开 |
+| 客户端 DevTools：`matchMedia('(prefers-reduced-motion: reduce)').matches` | `false` |
+
+这是**有意的无障碍行为，不是缺陷**；毛玻璃、配色、壁纸等其余功能不受影响。
+
+---
+
 ## patch.5 详细：为什么升级 DSH 后插件突然「不兼容」
 
 ### 症状

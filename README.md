@@ -192,6 +192,20 @@ Platform differences are limited to paths (see the tables above) and the absolut
 
 All three up = working.
 
+> **⚠️ Windows users: is the whale / the water "frozen"?**
+>
+> If Windows has "Animation effects" turned off (Settings → Accessibility → Visual effects → Animation effects),
+> Chromium/Electron reports `prefers-reduced-motion: reduce` to the page and the theme honours that accessibility
+> preference by rendering **static frames only**: the particle whale stops swimming and stops reacting to the pointer,
+> and the fluid board / dot mesh stop moving (the small fish and bubbles are CSS animations and keep going).
+>
+> **This is not a plugin defect.** Turn "Animation effects" back on (or run `SystemPropertiesPerformance.exe` →
+> Visual Effects → Custom and tick "Animate controls and elements inside windows"), then reload the client / restart the
+> app — the plugin reads the preference when it mounts. Frosted glass, palette and wallpaper are unaffected.
+>
+> Quick check: run `matchMedia('(prefers-reduced-motion: reduce)').matches` in the client DevTools console;
+> `true` means the system's reduced-motion preference is active.
+
 ---
 
 ## 5. Changelog

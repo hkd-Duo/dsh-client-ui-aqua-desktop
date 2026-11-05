@@ -192,6 +192,19 @@ dsh plugin --profile desktop remove dsh-client-ui-aqua
 
 三条都成立即正常工作。
 
+> **⚠️ Windows 用户注意：鲸鱼/流体/点阵看起来是"静止的"？**
+>
+> 如果系统关闭了「动画效果」（设置 → 辅助功能 → 视觉效果 → 动画效果），Chromium/Electron 会向网页上报
+> `prefers-reduced-motion: reduce`，本主题会按无障碍规范**只渲染静态帧**：粒子鲸鱼不游动、鼠标移上去不响应，
+> 背景流体和网状点阵也不再流动（小鱼/气泡是 CSS 动画，不受影响）。
+>
+> **这不是插件故障。** 打开「动画效果」即可恢复（或 `SystemPropertiesPerformance.exe` → 视觉效果 → 自定义，
+> 勾选"在窗口内动画控件和元素"等），然后重新加载客户端 / 重启应用（插件在挂载时读取该偏好）。
+> 毛玻璃、配色、壁纸等其他功能不受影响。
+>
+> 快速自检：在客户端 DevTools 控制台执行 `matchMedia('(prefers-reduced-motion: reduce)').matches`，
+> 返回 `true` 即说明系统"减少动态"生效中。
+
 ---
 
 ## 五、更新记录
